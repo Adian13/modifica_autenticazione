@@ -1,10 +1,6 @@
 package it.unisa.c07.biblionet.autenticazione.service;
 
 
-import it.unisa.c07.biblionet.model.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
-import it.unisa.c07.biblionet.model.entity.utente.Esperto;
-import it.unisa.c07.biblionet.model.entity.utente.Lettore;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 
 import java.util.List;
@@ -49,23 +45,8 @@ public interface AutenticazioneService {
       * @param utente La biblioteca da aggiornare
       * @return la biblioteca aggiornata
       */
-     Biblioteca aggiornaBiblioteca(Biblioteca utente);
+     UtenteRegistrato aggiornaUtente(UtenteRegistrato utente);
 
-     /**
-      * Implementa la funzionalità di salvataggio delle modifiche
-      * all'account esperto.
-      * @param utente L'esperto da aggiornare
-      * @return l'esperto aggiornato
-      */
-     Esperto aggiornaEsperto(Esperto utente);
-
-     /**
-      * Implementa la funzionalità di salvataggio delle modifiche
-      * all'account lettore.
-      * @param utente Lettore da aggiornare
-      * @return il lettore aggiornato
-      */
-     Lettore aggiornaLettore(Lettore utente);
 
 
      /**
@@ -73,21 +54,9 @@ public interface AutenticazioneService {
       * @param email La mail dell esperto
       * @return L'esperto se c'è, altrimenti null
       */
-     Esperto findEspertoByEmail(String email);
+     UtenteRegistrato findUtenteByEmail(String email);
 
-     /**
-      * Implementa la funzionalità di trovare un lettore.
-      * @param email La mail dell lettore
-      * @return Il lettore se c'è, altrimenti null
-      */
-     Lettore findLettoreByEmail(String email);
 
-     /**
-      * Implementa la funzionalità di trovare una biblioteca.
-      * @param email La mail della biblioteca
-      * @return La biblioteca se c'è, altrimenti null
-      */
-     Biblioteca findBibliotecaByEmail(String email);
 
      /**
       * Implementa la funzionalità di prendere una lista di club
@@ -95,7 +64,7 @@ public interface AutenticazioneService {
       * @param lettore il lettore preso in esame
       * @return la lista dei club del libro a cui partecipa
       */
-     List<ClubDelLibro> findAllByLettori(Lettore lettore);
+     //List<ClubDelLibro> findAllByLettori(Lettore lettore);
 
      /**
       * Implementa la funzionalità di prendere una lista di club
@@ -103,5 +72,5 @@ public interface AutenticazioneService {
       * @param esperto l' esperto preso in esame
       * @return la lista dei club del libro a cui partecipa
       */
-     List<ClubDelLibro> findAllByEsperto(Esperto esperto);
+     //List<ClubDelLibro> findAllByEsperto(Esperto esperto);
 }

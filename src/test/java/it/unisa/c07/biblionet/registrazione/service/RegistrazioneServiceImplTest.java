@@ -1,14 +1,6 @@
 package it.unisa.c07.biblionet.registrazione.service;
 
 import it.unisa.c07.biblionet.autenticazione.service.AutenticazioneServiceImpl;
-import it.unisa.c07.biblionet.model.dao.GenereDAO;
-import it.unisa.c07.biblionet.model.dao.utente.BibliotecaDAO;
-import it.unisa.c07.biblionet.model.dao.utente.EspertoDAO;
-import it.unisa.c07.biblionet.model.entity.Genere;
-import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
-import it.unisa.c07.biblionet.model.entity.utente.Esperto;
-import it.unisa.c07.biblionet.model.dao.utente.LettoreDAO;
-import it.unisa.c07.biblionet.model.entity.utente.Lettore;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

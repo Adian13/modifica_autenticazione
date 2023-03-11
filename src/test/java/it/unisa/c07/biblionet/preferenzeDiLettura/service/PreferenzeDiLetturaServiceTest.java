@@ -1,7 +1,5 @@
 package it.unisa.c07.biblionet.preferenzeDiLettura.service;
 
-import it.unisa.c07.biblionet.model.dao.GenereDAO;
-import it.unisa.c07.biblionet.model.entity.Genere;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

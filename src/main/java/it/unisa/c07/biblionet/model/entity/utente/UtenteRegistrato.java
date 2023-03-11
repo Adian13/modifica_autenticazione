@@ -37,45 +37,18 @@ public class UtenteRegistrato {
     /**
      * Rappresenta la password di un utente registrato.
      */
-    @Column(nullable = false, length = Length.LENGTH_32)
+    @Column(nullable = false, length = Length.LENGTH_320)
     @NonNull
     private byte[] password;
-
-    /**
-     * Rappresente la provincia dove vive l'utente registrato.
-     */
-    @Column(nullable = false, length = Length.LENGTH_30)
-    @NonNull
-    private String provincia;
-
-    /**
-     * Rappresenta la città dove vive l'utente registrato.
-     */
-    @Column(nullable = false, length = Length.LENGTH_30)
-    @NonNull
-    private String citta;
-
-    /**
-     * Rappresenta la via dove vive l'utente registrato.
-     */
-    @Column(nullable = false, length = Length.LENGTH_30)
-    @NonNull
-    private String via;
-
-    /**
-     * Rappresenta il recapito telefonico dell'utente registrato.
-     */
-    @Column(nullable = false, length = Length.LENGTH_10)
-    @NonNull
-    private String recapitoTelefonico;
-
 
     /**
      * Rappresenta il tipo di utente.
      * Utile per essere chiamato sui figli, nella entity UtenteRegistrato
      * non ha senso di essere chiamato.
      */
-    @Transient
+    @Column(nullable = false, length = Length.LENGTH_10)
+    @NonNull
+    //@Transient rimosso
     private String tipo;
 
     /**
@@ -87,15 +60,11 @@ public class UtenteRegistrato {
      * @param via la via dove vive l'utente.
      * @param recapitoTelefonico il recapito telefonico dell'utente.
      */
-    public UtenteRegistrato(final String email, final String password,
-                            final String provincia, final String citta,
-                            final String via, final String recapitoTelefonico) {
+    public UtenteRegistrato(final String email, final String password, final String tipo) {
 
         this.email = email;
-        this.provincia = provincia;
-        this.citta = citta;
-        this.via = via;
-        this.recapitoTelefonico = recapitoTelefonico;
+
+        this.tipo = tipo;
 
         /*
         Questo blocco di codice serve per l'hashing della password,
@@ -136,6 +105,7 @@ public class UtenteRegistrato {
     public void setHashedPassword(final byte[] hashPassword) {
         this.password = hashPassword;
     }
+
 
 
 }

@@ -1,10 +1,6 @@
 package it.unisa.c07.biblionet.prenotazioneLibri.controller;
 
 import it.unisa.c07.biblionet.BiblionetApplication;
-import it.unisa.c07.biblionet.model.dao.GenereDAO;
-import it.unisa.c07.biblionet.model.dao.utente.BibliotecaDAO;
-import it.unisa.c07.biblionet.model.entity.Genere;
-import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
 import it.unisa.c07.biblionet.prenotazioneLibri.service.PrenotazioneLibriService;
 import lombok.Getter;
 import lombok.Setter;

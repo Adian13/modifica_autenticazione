@@ -1,9 +1,6 @@
 package it.unisa.c07.biblionet.preferenzeDiLettura.service;
 
 import it.unisa.c07.biblionet.BiblionetApplication;
-import it.unisa.c07.biblionet.gestioneEventi.service.GestioneEventiService;
-import it.unisa.c07.biblionet.model.dao.GenereDAO;
-import it.unisa.c07.biblionet.model.entity.Genere;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 /**
  * Implementa l'integration testing del service per il sottosistema

@@ -1,19 +1,11 @@
 package it.unisa.c07.biblionet.autenticazione.service;
 
-import it.unisa.c07.biblionet.clubDelLibro.service.ClubDelLibroService;
-import it.unisa.c07.biblionet.model.dao.utente.BibliotecaDAO;
-import it.unisa.c07.biblionet.model.dao.utente.EspertoDAO;
-import it.unisa.c07.biblionet.model.dao.utente.LettoreDAO;
-import it.unisa.c07.biblionet.model.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
-import it.unisa.c07.biblionet.model.entity.utente.Esperto;
-import it.unisa.c07.biblionet.model.entity.utente.Lettore;
+import it.unisa.c07.biblionet.model.dao.utente.UtenteRegistratoDAO;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,22 +21,9 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      *Si occupa delle operazioni CRUD per un lettore.
      */
-    private final LettoreDAO lettoreDAO;
+    private final UtenteRegistratoDAO utenteRegistratoDAO;
 
-    /**
-     * Si occupa delle operazioni CRUD per una biblioteca.
-     */
-    private final BibliotecaDAO bibliotecaDAO;
 
-    /**
-     * Si occupa delle operazioni CRUD un esperto.
-     */
-    private final EspertoDAO espertoDAO;
-
-    /**
-     * I.
-     */
-    private final ClubDelLibroService clubDelLibroService;
 
     /**
      * Implementa la funzionalità di login
@@ -61,13 +40,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
             byte[] arr = md.digest(password.getBytes());
             UtenteRegistrato u;
 
-            if ((u = lettoreDAO.findByEmailAndPassword(email, arr)) != null) {
-                return u;
-            } else if ((u =
-                    bibliotecaDAO.findByEmailAndPassword(email, arr)) != null) {
-                return u;
-            } else {
-                u = espertoDAO.findByEmailAndPassword(email, arr);
+            if ((u = utenteRegistratoDAO.findByEmailAndPassword(email, arr)) != null) {
                 return u;
             }
 
@@ -85,7 +58,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      */
     @Override
     public boolean isLettore(final UtenteRegistrato utente) {
-        return "Lettore".equals(utente.getClass().getSimpleName());
+        return "Lettore".equals(utente.getTipo());
     }
 
     /**
@@ -96,7 +69,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      */
     @Override
     public boolean isEsperto(final UtenteRegistrato utente) {
-        return "Esperto".equals(utente.getClass().getSimpleName());
+        return "Esperto".equals(utente.getTipo());
     }
 
     /**
@@ -107,7 +80,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      */
     @Override
     public boolean isBiblioteca(final UtenteRegistrato utente) {
-        return "Biblioteca".equals(utente.getClass().getSimpleName());
+        return "Biblioteca".equals(utente.getTipo());
     }
 
     /**
@@ -116,41 +89,12 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * @param utente La biblioteca da aggiornare
      * @return la biblioteca aggiornata
      */
-    public Biblioteca aggiornaBiblioteca(final Biblioteca utente) {
-        return bibliotecaDAO.save(utente);
+    public UtenteRegistrato aggiornaUtente(final UtenteRegistrato utente) {
+        return utenteRegistratoDAO.save(utente);
     }
 
-    /**
-     * Implementa la funzionalità di salvataggio delle modifiche
-     * all'account esperto.
-     * @param utente L'esperto da aggiornare
-     * @return l'esperto aggiornato
-     */
-    public Esperto aggiornaEsperto(final Esperto utente) {
-        return espertoDAO.save(utente);
-    }
 
-    /**
-     * Implementa la funzionalità di salvataggio delle modifiche
-     * all'account lettore.
-     * @param utente Lettore da aggiornare
-     * @return il lettore aggiornato
-     */
-    public Lettore aggiornaLettore(final Lettore utente) {
-        return lettoreDAO.save(utente);
-    }
 
-    /**
-     * Implementa la funzionalità di trovare una biblioteca.
-     * @param email La mail della biblioteca
-     * @return La biblioteca se c'è, altrimenti null
-     */
-    @Override
-    public final Biblioteca findBibliotecaByEmail(final String email) {
-
-        Optional<UtenteRegistrato> b = bibliotecaDAO.findById(email);
-        return (Biblioteca) b.orElse(null);
-    }
 
     /**
      * Implementa la funzionalità di trovare un esperto.
@@ -158,44 +102,11 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * @return L'esperto se c'è, altrimenti null
      */
     @Override
-    public final Esperto findEspertoByEmail(final String email) {
+    public final UtenteRegistrato findUtenteByEmail(final String email) {
 
-        Optional<UtenteRegistrato> b = espertoDAO.findById(email);
-        return (Esperto) b.orElse(null);
+        Optional<UtenteRegistrato> b = utenteRegistratoDAO.findById(email);
+        return (UtenteRegistrato) b.orElse(null);
     }
 
-    /**
-     * Implementa la funzionalità di trovare un lettore.
-     * @param email La mail dell lettore
-     * @return Il lettore se c'è, altrimenti null
-     */
-    @Override
-    public final Lettore findLettoreByEmail(final String email) {
-
-        Optional<UtenteRegistrato> b = lettoreDAO.findById(email);
-        return (Lettore) b.orElse(null);
-    }
-
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro a cui un lettore partecipa.
-     * @param lettore il lettore preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    @Override
-    public List<ClubDelLibro> findAllByLettori(final Lettore lettore) {
-        return clubDelLibroService.findAllByLettori(lettore);
-    }
-
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro di cui un esperto è proprietario.
-     * @param esperto l' esperto preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    @Override
-    public List<ClubDelLibro> findAllByEsperto(final Esperto esperto) {
-        return clubDelLibroService.findAllByEsperto(esperto);
-    }
 
 }
