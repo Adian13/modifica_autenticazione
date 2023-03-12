@@ -1,15 +1,15 @@
 package it.unisa.c07.biblionet.autenticazione.controller;
 
 import it.unisa.c07.biblionet.autenticazione.service.AutenticazioneService;
+import it.unisa.c07.biblionet.config.JwtGeneratorImpl;
+import it.unisa.c07.biblionet.config.JwtGeneratorInterface;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
 
@@ -27,6 +27,7 @@ public class AutenticazioneController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final AutenticazioneService autenticazioneService;
+    private final JwtGeneratorImpl jwtGenerator;
 
     /**
      * Implementa la funzionalità che permette
@@ -44,24 +45,25 @@ public class AutenticazioneController {
      * Implementa la funzionalità di login come utente.
      * @param email dell'utente.
      * @param password password dell'utente.
-     * @param model la sessione in cui salvare l'utente.
      * @return rimanda alla pagina di home.
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestParam final String email,
-                        @RequestParam final String password,
-                        final Model model) {
-        UtenteRegistrato utente = autenticazioneService.login(email,
-                                                                password);
+    public ResponseEntity<?> login(@RequestParam final String email,
+                        @RequestParam final String password) {
+        UtenteRegistrato utente = autenticazioneService.login(email, password);
+        UtenteRegistrato user = new UtenteRegistrato("paulo@dybala.it", "juventus", "Biblioteca");
             if (utente == null) {
-                model.addAttribute("error", true);
-                return "autenticazione/login";
+                System.out.println("Forbidden");
+                //return null;
             } else {
-                model.addAttribute("loggedUser", utente);
+
+
             }
-            return "index";
+        return new ResponseEntity<>(jwtGenerator.generateToken(user), HttpStatus.OK);
 
     }
+
+
 
     /**
      * Implenta la funzionalità che permette
