@@ -6,16 +6,14 @@ import it.unisa.c07.biblionet.utils.validazione.RegexTester;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 
+//todo le operazioni di conferma password etc sono state spostate al front-end
 /**
  * @author Alessio Casolaro
  * @author Antonio Della Porta
@@ -37,10 +35,8 @@ public final class RegistrazioneController {
      *
      * @return La pagina di visualizzazione
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String visualizzaRegistrazione() {
-        return "registrazione/registrazione";
-    }
+    //@RequestMapping(value = "/", method = RequestMethod.GET) todo front-end
+    //public String visualizzaRegistrazione() {return "registrazione/registrazione";}
 
     /**
      * Implementa la funzionalità di registrazione di
@@ -49,94 +45,56 @@ public final class RegistrazioneController {
      * @param scelta Il tipo di utente da registrare
      * @return La view che visualizza il form di registrazione scelto.
      */
+    /*
     @RequestMapping(value = "/scegli", method = RequestMethod.POST)
     public String scegliRegistrazione(final @RequestParam("scelta")
                                               String scelta) {
         return "registrazione/registrazione_" + scelta.toLowerCase();
     }
+    todo frontend
+    */
+
 
     /**
      * Implementa la funzionalità di registrazione di un esperto.
      *
      * @param utente l'utente da registrare
-     * @param password il campo conferma password del form per controllare
-     *                 il corretto inserimento della stessa
      * @return la view per effettuare il login
      */
-    @RequestMapping(value = "/esperto", method = RequestMethod.POST)
-    public String registrazioneEsperto(final UtenteRegistrato utente,
-                                       final @RequestParam("conferma_password")
-                                               String password) {
+    @RequestMapping(value = "/utente", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public boolean registrazioneUtente(final UtenteRegistrato utente) {
 
+        System.out.println(utente.getEmail());
         if (registrazioneService.isEmailRegistrata(utente.getEmail())) {
-            return "registrazione/registrazione_esperto";
+            return false;
         }
 
-        utente.setTipo("Esperto");
-
-        try {
-            MessageDigest md;
-            md = MessageDigest.getInstance("SHA-256");
-            byte[] arr = md.digest(password.getBytes());
-
-            if (Arrays.compare(arr, utente.getPassword()) != 0) {
-
-                System.out.println("Questa password non va bene");
-                return "registrazione/registrazione_esperto";
-
-            } else if (password.length() <= 7) {
-
-                return "registrazione/registrazione_esperto";
-            }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        registrazioneService.registraUtente(utente);
-        return "redirect:/preferenze-di-lettura/generi";
-
-
+        if(registrazioneService.registraUtente(utente) != null);
+        return true;
     }
 
     /**
      * Implementa la funzionalità di registrazione di una biblioteca.
      *
      * @param utente la biblioteca da registrare
-     * @param password   la password di conferma
      * @return la view di login
      */
     @RequestMapping(value = "/biblioteca", method = RequestMethod.POST)
-    public String registrazioneBiblioteca(final UtenteRegistrato utente,
-                                 final @RequestParam("conferma_password")
-                                                  String password) {
+    @CrossOrigin
+    @ResponseBody
+    public boolean registrazioneBiblioteca(final UtenteRegistrato utente) {
 
 
         if (registrazioneService.isEmailRegistrata(utente.getEmail())) {
-            return "registrazione/registrazione_esperto";
+            return false;
         }
 
         utente.setTipo("Biblioteca");
 
-        try {
-            MessageDigest md;
-            md = MessageDigest.getInstance("SHA-256");
-            byte[] arr = md.digest(password.getBytes());
-
-            if (Arrays.compare(arr, utente.getPassword()) != 0) {
-
-                System.out.println("Questa password non va bene");
-                return "registrazione/registrazione_esperto";
-
-            } else if (password.length() <= 7) {
-
-                return "registrazione/registrazione_esperto";
-            }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
         registrazioneService.registraUtente(utente);
-        return "redirect:/preferenze-di-lettura/generi";
+        return true;
     }
 
 
@@ -152,6 +110,8 @@ public final class RegistrazioneController {
      * @return La view per effettuare il login
      */
     @RequestMapping(value = "/lettore", method = RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
     public String registrazioneLettore(final UtenteRegistrato utente,
                                        final @RequestParam("conferma_password")
                                                String password) {

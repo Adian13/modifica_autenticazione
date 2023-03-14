@@ -1,15 +1,15 @@
 package it.unisa.c07.biblionet.autenticazione.controller;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.impl.DefaultJwtParser;
 import it.unisa.c07.biblionet.autenticazione.service.AutenticazioneService;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 import it.unisa.c07.biblionet.utils.validazione.RegexTester;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +32,6 @@ public class AreaUtenteController {
     /**
      * Implementa la funzionalità di smistare l'utente sulla view di
      * modifica dati corretta.
-     * @param model Utilizzato per gestire la sessione.
      *
      * @return modifica_dati_biblioteca se l'account
      * da modificare é una biblioteca.
@@ -43,6 +42,7 @@ public class AreaUtenteController {
      * modifica_dati_lettore se l'account
      * da modificare é un lettore.
      */
+
     /*
     @RequestMapping(value = "/modifica-dati", method = RequestMethod.GET)
     public String modificaDati(final Model model) {
@@ -69,13 +69,24 @@ public class AreaUtenteController {
         }
         return "autenticazione/login";
     }
-*/
+    todo va fatta lato front-end
+    */
+
+    private Claims getClaimsFromTokenWithoutKey(String token){
+        token = token.substring(7);
+        String[] splitToken = token.split("\\.");
+        String unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
+
+        DefaultJwtParser parser = new DefaultJwtParser();
+        Jwt<?, ?> jwt = parser.parse(unsignedToken);
+        return  (Claims) jwt.getBody();
+    }
 
     /**
      * Implementa la funzionalità di modifica dati di una bibilioteca.
+     * todo a me sembra semplice modifica password, ma potrei aver cancellato qualcosa
      *
-     * @param model Utilizzato per gestire la sessione.
-     * @param utente da modificare.
+     *
      * @param vecchia La vecchia password dell'account.
      * @param nuova La nuova password dell'account.
      * @param conferma La password di conferma password dell'account.
@@ -85,17 +96,23 @@ public class AreaUtenteController {
      */
     @RequestMapping(value = "/conferma-modifica-utente",
             method = RequestMethod.POST)
-    public String confermaModificaUtente(final Model model,
-                     final UtenteRegistrato utente,
+    @CrossOrigin
+    @ResponseBody
+    public String confermaModificaUtente(@RequestHeader(name="Authorization") String token,
                      final @RequestParam("vecchia_password")String vecchia,
                      final @RequestParam("nuova_password")String nuova,
                      final @RequestParam("conferma_password")String conferma) {
 
 
-        UtenteRegistrato toUpdate = autenticazioneService
-                .findUtenteByEmail(utente.getEmail());
 
+        Claims claims = getClaimsFromTokenWithoutKey(token);
+        UtenteRegistrato toUpdate = autenticazioneService.findUtenteByEmail(claims.getSubject());
 
+        return "Eccoci qua";
+/*
+        if (nuova.length() <= 7) {
+            return "area-utente/modifica-dati-biblioteca";
+        }
 
         if (!vecchia.isEmpty() && !nuova.isEmpty() && !conferma.isEmpty()) {
             try {
@@ -103,16 +120,14 @@ public class AreaUtenteController {
                 md = MessageDigest.getInstance("SHA-256");
                 byte[] vecchiaHash = md.digest(vecchia.getBytes());
 
-                if (nuova.length() <= 7) {
-                    return "area-utente/modifica-dati-biblioteca";
-                }
+
 
                 if (Arrays.compare(vecchiaHash,
                         toUpdate.getPassword()) == 0
                         &&
                         nuova.equals(conferma)
                 ) {
-                    utente.setPassword(nuova);
+                    toUpdate.setPassword(nuova);
                 } else {
                     return "area-utente/modifica-dati-biblioteca";
                 }
@@ -122,13 +137,13 @@ public class AreaUtenteController {
             }
 
         } else {
-            utente.setHashedPassword(toUpdate.getPassword());
+            toUpdate.setHashedPassword(toUpdate.getPassword());
         }
 
         autenticazioneService.aggiornaUtente(utente);
 
         return "autenticazione/login";
-
+*/
     }
 
     /**
@@ -138,6 +153,7 @@ public class AreaUtenteController {
      * @param model Utilizzato per gestire la sessione.
      * @return La view di visualizzazione area utente
      */
+    /*
     @RequestMapping(value = "/area-utente", method = RequestMethod.GET)
     public String areaUtente(final Model model) {
         UtenteRegistrato utente = (UtenteRegistrato)
@@ -163,6 +179,9 @@ public class AreaUtenteController {
         }
         return "autenticazione/login";
     }
+    todo front-end
+    */
+
 
     /**
      * Implementa la funzionalitá di visualizzazione dei clubs
@@ -200,6 +219,10 @@ public class AreaUtenteController {
             return "area-utente/visualizza-clubs-personali";
         }
         return "autenticazione/login";
+
+
+
     }
-    */
+
+*/
 }

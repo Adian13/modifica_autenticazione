@@ -16,20 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RegistrazioneServiceImpl implements RegistrazioneService {
 
-    /**
-     * Si occupa di gestire le operazioni CRUD dell'Esperto.
-     */
-    private final UtenteRegistratoDAO utenteRegistratoDAO;
 
+    private final UtenteRegistratoDAO utenteRegistratoDAO;
     private final AutenticazioneService autenticazioneService;
 
-    /**
-     * Implementa la funzionalità di registrazione un Esperto.
-     * @param utente L'Esperto da registrare
-     * @return L'utente registrato
-     */
     @Override
     public final UtenteRegistrato registraUtente(final UtenteRegistrato utente) {
+
+        if(isEmailRegistrata(utente.getEmail())) return null;
         return utenteRegistratoDAO.save(utente);
     }
 
